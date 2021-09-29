@@ -1,23 +1,15 @@
-# dune-elastodynamics
-!!! PROTOTYPE !!!
+# dune-precice
 
-Created during my master's thesis for testing partitioned coupling schemes with
-the library preCICE.
+A adapter module enabeling multiphysics simulation inside DUNE with the help of preCICE [[1]](#1) [[2]](#2).
 
-This DUNE module is used to solve the linear equations of elastodynamics.
-Assemblers for the calculation of stiffness, mass and lumped mass operators are provided.
-Different explicit and implicit time-stepping methods for the solution of the corresponding
-system of second order ordinary differential equations are implemented. 
 
-## Installation
-
-It is assumed the dune core modules and all other necessary libraries are allready installed.
-
-Dependencies:
-
-* dune-common, dune-geometry, dune-uggrid, dune-grid, dune-localfunctions, dune-istl, dune-functions, dune-foamgrid, dune-typetree
-* MPI, Message Passing Interface library
-* OpenMP
-
-Run the following command to build the module:
+Can be build inside the DUNE framework with:\
 `dunecontrol --current all`
+
+<a id="1">[1]</a> 
+Firmbach M. (2021).
+[Aeroelastic simulation of slender wings for electric aircraft - A partitioned approach with DUNE and preCICE](https://mediatum.ub.tum.de/node?id=1609293), Master's Thesis
+
+<a id="2">[2]</a> 
+Firmbach M., Callies R. (2021).
+[Aeroelastic simulation of slender wings for electric aircraft - A partitioned approach with DUNE and preCICE](https://athene-forschung.unibw.de/138607), Conference Contribution
