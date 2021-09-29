@@ -1,6 +1,6 @@
 # dune-precice
 
-A adapter module enabeling multiphysics simulation inside DUNE with the help of preCICE [[1]](#1) [[2]](#2).
+A adapter module enabeling multiphysics simulation inside DUNE with the help of preCICE [1][2].
 
 
 Can be build inside the DUNE framework with:\
