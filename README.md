@@ -3,9 +3,21 @@
 
 A adapter module enabeling multiphysics simulation inside DUNE with the help of preCICE [1][2].
 
+The dune-adapter module depends on the DUNE core modules and
+on dune-elastodynamics providing the necessary tools for structural simulation.
 
-Can be build inside the DUNE framework with:\
-`dunecontrol --current all`
+The dune-elastodynamics module can be found here:
+https://github.com/maxfirmbach/dune-elastodynamics
+
+The adapter can be build with:
+`<path-to-dune-common/bin/dunecontrol> --current all`
+
+## tutorial
+
+The executable for the perpendicular-flap tutorial case can be
+found in:
+`dune-precice/build-cmake/src/`
+after the module was build and needs to be copied to the solid-dune folder.
 
 <a id="1">[1]</a> 
 Firmbach M. (2021).
