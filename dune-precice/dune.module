@@ -7,4 +7,4 @@ Module: dune-precice
 Version: 1.0
 Maintainer: max.firmbach@unibw.de
 #depending on
-Depends: dune-common dune-istl dune-functions dune-elastodynamics
+Depends: dune-common (>= 2.7) dune-istl (>= 2.7) dune-functions (>= 2.7) dune-elastodynamics (>= 2.7)
