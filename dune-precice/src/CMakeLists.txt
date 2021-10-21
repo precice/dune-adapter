@@ -1,7 +1,8 @@
 find_package(precice REQUIRED CONFIG)
 
 set(programs
-		dune-perpendicular-flap)
+		dune-perpendicular-flap
+    dune-perpendicular-flap-implicit)
 
 #include precice
 find_package(precice)
