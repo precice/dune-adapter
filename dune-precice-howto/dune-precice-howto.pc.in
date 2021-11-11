@@ -8,8 +8,8 @@ DEPENDENCIES=@REQUIRES@
 
 Name: @PACKAGE_NAME@
 Version: @VERSION@
-Description: dune-precice module
+Description: dune-precice-howto module
 URL: http://dune-project.org/
-Requires: dune-common dune-istl dune-functions
+Requires: dune-common dune-geometry dune-uggrid dune-grid dune-istl dune-functions dune-elastodynamics dune-precice
 Libs: -L${libdir}
 Cflags: -I${includedir}

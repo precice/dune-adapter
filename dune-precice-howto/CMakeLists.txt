@@ -1,11 +1,9 @@
-# We require version CMake version 3.1 to prevent issues
-# with dune_enable_all_packages and older CMake versions.
-cmake_minimum_required(VERSION 3.1)
-project(dune-precice CXX)
+cmake_minimum_required(VERSION 3.13)
+project(dune-precice-howto CXX)
 
 if(NOT (dune-common_DIR OR dune-common_ROOT OR
       "${CMAKE_PREFIX_PATH}" MATCHES ".*dune-common.*"))
-    string(REPLACE  ${CMAKE_PROJECT_NAME} dune-common dune-common_DIR
+    string(REPLACE  ${PROJECT_NAME} dune-common dune-common_DIR
       ${PROJECT_BINARY_DIR})
 endif()
 
@@ -22,11 +20,8 @@ dune_project()
 
 dune_enable_all_packages()
 
-add_subdirectory(dune-precice)
+add_subdirectory(examples)
 add_subdirectory(cmake/modules)
-
-# find precice library
-find_package(precice 2.0.0 REQUIRED CONFIG)
 
 # finalize the dune project, e.g. generating config.h etc.
 finalize_dune_project(GENERATE_CONFIG_H_CMAKE)

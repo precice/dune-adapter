@@ -34,7 +34,7 @@
 #include <dune/elastodynamics/timesteppers/timestepcontroller.hh>
 #include <dune/elastodynamics/timesteppers/newmark.hh>
 
-#include <dune/precice/couplinginterface.hh>
+#include <dune-precice/couplinginterface.hh>
 
 using namespace Dune;
 
