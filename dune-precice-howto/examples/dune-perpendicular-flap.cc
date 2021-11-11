@@ -161,6 +161,7 @@ int main(int argc, char** argv) {
   // setup looping
   double t = 0.0;
   double dt = 0.01;
+  double precice_dt = 0.0;
   int iteration_count = 0;
 
   // set up Newmark method
@@ -172,7 +173,7 @@ int main(int argc, char** argv) {
   // set up coupling interface
   couplingParameters parameters; 
   preCICE::CouplingInterface<dim, blockVector, couplingParameters> couplingInterface(parameters, neumannDofs, mpiRank, mpiSize); 
-  couplingInterface.initialize(basis);
+  precice_dt = couplingInterface.initialize(basis);
   
   while(couplingInterface.is_coupling_ongoing()) {
   
@@ -193,10 +194,10 @@ int main(int argc, char** argv) {
 
     newmark.step(displacementVector, velocityVector, accelerationVector, loadVector);
             
-    dt = std::min(couplingInterface.precice_timestep_length, dt);
+    dt = std::min(precice_dt, dt);
                           
     couplingInterface.send_blockvector_data(displacementVector);
-    couplingInterface.advance(dt);
+    precice_dt = couplingInterface.advance(dt);
                      
     if(couplingInterface.is_load_required()) {
         couplingInterface.reload_old_state(stateQuantaties, t, iteration_count);
