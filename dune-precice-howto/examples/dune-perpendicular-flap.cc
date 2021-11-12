@@ -98,8 +98,7 @@ int main(int argc, char** argv) {
   loadVector = 0.0, displacementVector = 0.0, velocityVector = 0.0, accelerationVector = 0.0;
 
   // state quantatiy vector
-  std::vector<blockVector*> stateQuantaties;
-  stateQuantaties = {&displacementVector, &velocityVector, &accelerationVector};
+  std::vector<blockVector*> stateQuantaties = {&displacementVector, &velocityVector, &accelerationVector};
 
   // set dirichlet boundary
   BitSetVector<dim> dirichletDofs(basis.size(), false);

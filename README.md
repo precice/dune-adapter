@@ -13,8 +13,8 @@ https://www.dune-project.org/doc/installation/
 ## dune-precice-howto
 This module contains tutorial cases to get familiar with preCICE and the respective dune-adapter.
 
-The dune-adapter module depends on the DUNE core modules, dune-precice and
-on dune-elastodynamics, dune-foamgrid providing the necessary tools for structural simulation.
+The dune-adapter module depends on the DUNE core modules (version >= 2.7), dune-precice (precice version >= 2.0.0) and
+on dune-elastodynamics, dune-foamgrid (version >= 2.7) providing the necessary tools for structural simulation.
 
 The dune-elastodynamics module can be found here:
 https://github.com/maxfirmbach/dune-elastodynamics
