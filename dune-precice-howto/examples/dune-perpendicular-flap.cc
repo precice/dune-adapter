@@ -195,7 +195,7 @@ int main(int argc, char** argv) {
             
     dt = std::min(precice_dt, dt);
                           
-    couplingInterface.send_blockvector_data(displacementVector);
+    couplingInterface.write_blockvector_data(displacementVector);
     precice_dt = couplingInterface.advance(dt);
                      
     if(couplingInterface.is_load_required()) {

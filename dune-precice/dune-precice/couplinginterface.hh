@@ -28,7 +28,11 @@ namespace Dune::preCICE {
       int iteration_count = 0;
       for(int i=0; i<dune_data.N(); i++) {
         for(int j=0; j<dim; j++) {
-          if(is_coupling_boundary[i][j]) { dune_data[i][j] = precice_data[iteration_count]; ++iteration_count; }
+          if(is_coupling_boundary[i][j])
+          {
+            dune_data[i][j] = precice_data[iteration_count];
+            ++iteration_count;
+          }
         }
       }
     }
@@ -41,7 +45,11 @@ namespace Dune::preCICE {
       int iteration_count = 0;
       for(int i=0; i<dune_data.N(); i++) {
         for(int j=0; j<dim; j++) {
-          if(is_coupling_boundary[i][j]) { precice_data[iteration_count] = dune_data[i][j]; ++iteration_count; }
+          if(is_coupling_boundary[i][j]) 
+          { 
+            precice_data[iteration_count] = dune_data[i][j];
+            ++iteration_count;
+          }
         }
       }
     }
@@ -66,17 +74,19 @@ namespace Dune::preCICE {
       int write_data_id_;
       
       int n_interface_nodes_;
-      std::vector<double> interface_nodes_positions_;
-      std::vector<int>    interface_nodes_ids_;
+      std::vector<int> interface_nodes_ids_;
       
       std::vector<double> read_data_;
       std::vector<double> write_data_;
+      const int mpi_rank_;  
       
-      std::vector<VectorType> old_state_data_;
-      double old_time_;
-      int old_iter_;
+      struct {
+        std::vector<VectorType> data;
+        double time;
+        int iter;
+      } previous_solver_state_;
      
-      int mpi_rank_;  
+
 
     public:
               
@@ -88,7 +98,7 @@ namespace Dune::preCICE {
       double initialize(const PolynomialBasis &polynomial_basis);
        
       void read_blockvector_data(VectorType &dune_data);
-      void send_blockvector_data(const VectorType &dune_data);
+      void write_blockvector_data(const VectorType &dune_data);
 
       double advance(double computed_timestep_length);
        
@@ -131,18 +141,19 @@ namespace Dune::preCICE {
   double CouplingInterface<dim, VectorType, ParameterClass>::initialize(
     const PolynomialBasis &polynomial_basis) 
   {
-	mesh_id_       = precice.getMeshID(mesh_name_);
-	read_data_id_  = precice.getDataID(read_data_name_, mesh_id_);
-	write_data_id_ = precice.getDataID(write_data_name_, mesh_id_);
+    mesh_id_       = precice.getMeshID(mesh_name_);
+    read_data_id_  = precice.getDataID(read_data_name_, mesh_id_);
+    write_data_id_ = precice.getDataID(write_data_name_, mesh_id_);
             
     VectorType coordinates_of_boundary;
     auto coordinate = [] (auto x) { return x; };
  
     interpolate(polynomial_basis, coordinates_of_boundary, coordinate, is_coupling_boundary_);
 
+    std::vector<double> interface_nodes_positions;
     for(int i=0; i<coordinates_of_boundary.N(); i++) {
       for(int j=0; j<dim; j++) {
-        if(is_coupling_boundary_[i][j]) interface_nodes_positions_.push_back(coordinates_of_boundary[i][j]);
+        if(is_coupling_boundary_[i][j]) interface_nodes_positions.push_back(coordinates_of_boundary[i][j]);
       }
     }
         
@@ -154,7 +165,7 @@ namespace Dune::preCICE {
 
     write_data_.resize(dim * n_interface_nodes_);
     read_data_.resize(dim * n_interface_nodes_);
-    interface_nodes_positions_.resize(dim * n_interface_nodes_);
+    interface_nodes_positions.resize(dim * n_interface_nodes_);
     interface_nodes_ids_.resize(n_interface_nodes_);
 
     std::cout << "preCICE:  Mesh ID on rank "     << mpi_rank_ << " = " << mesh_id_           << std::endl;
@@ -162,7 +173,7 @@ namespace Dune::preCICE {
     std::cout << "preCICE:  Write ID on rank "    << mpi_rank_ << " = " << write_data_id_     << std::endl;  
     std::cout << "preCICE:  Vertex size on rank " << mpi_rank_ << " = " << n_interface_nodes_ << std::endl;
        
-    precice.setMeshVertices(mesh_id_, n_interface_nodes_, interface_nodes_positions_.data(), interface_nodes_ids_.data());
+    precice.setMeshVertices(mesh_id_, n_interface_nodes_, interface_nodes_positions.data(), interface_nodes_ids_.data());
     
     return precice.initialize();
   }
@@ -177,14 +188,14 @@ namespace Dune::preCICE {
   
   
   template <int dim, typename VectorType, typename ParameterClass>
-  void CouplingInterface<dim, VectorType, ParameterClass>::send_blockvector_data(const VectorType &dune_data)
+  void CouplingInterface<dim, VectorType, ParameterClass>::write_blockvector_data(const VectorType &dune_data)
   {
     Utilities::copy_from_dune_to_precice<dim, VectorType>(dune_data, write_data_, is_coupling_boundary_);
     precice.writeBlockVectorData(write_data_id_, n_interface_nodes_, interface_nodes_ids_.data(), write_data_.data());
   }
       
   template <int dim, typename VectorType, typename ParameterClass>
-  double CouplingInterface<dim, VectorType, ParameterClass>::advance(double computed_timestep_length)
+  double CouplingInterface<dim, VectorType, ParameterClass>::advance(const double computed_timestep_length)
   {
     return precice.advance(computed_timestep_length);
   }
@@ -236,14 +247,14 @@ namespace Dune::preCICE {
     const double time,
     const int iter) 
   {  
-    old_state_data_.resize(state_quantaties.size());
+    previous_solver_state_.data.resize(state_quantaties.size());
     
     for (int i=0; i<state_quantaties.size(); i++) {
-      old_state_data_[i] = *(state_quantaties[i]);
+      previous_solver_state_.data[i] = *(state_quantaties[i]);
     }
 
-    old_time_ = time;
-    old_iter_ = iter; 
+    previous_solver_state_.time = time;
+    previous_solver_state_.iter = iter; 
   }
 
   template <int dim, typename VectorType, typename ParameterClass>
@@ -252,12 +263,14 @@ namespace Dune::preCICE {
     double &time,
     int &iter)
   {
+    assert( state_quantaties.size() == previous_solver_state_.data.size() );
+
     for (int i=0; i<state_quantaties.size(); i++) {
-      *(state_quantaties[i]) = old_state_data_[i];
+      *(state_quantaties[i]) = previous_solver_state_.data[i];
     }
    
-    time = old_time_;
-    iter = old_iter_;
+    time = previous_solver_state_.time;
+    iter = previous_solver_state_.iter;
   }
 } // namespace Dune
 
