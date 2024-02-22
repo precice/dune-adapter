@@ -26,7 +26,7 @@ add_subdirectory(dune-precice)
 add_subdirectory(cmake/modules)
 
 # find precice library
-find_package(precice 2.0.0 REQUIRED CONFIG)
+find_package(precice 3.0.0 REQUIRED CONFIG)
 
 # finalize the dune project, e.g. generating config.h etc.
 finalize_dune_project(GENERATE_CONFIG_H_CMAKE)

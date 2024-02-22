@@ -4,7 +4,7 @@
 ## dune-precice
 A adapter module enabeling multiphysics simulation inside DUNE with the help of preCICE [1][2].
 
-The adapter can be build with:
+The adapter can be built with:
 `<path-to-dune-common/bin/dunecontrol> --current all`
 
 For more detailed installation instructions have a look at:
@@ -19,11 +19,10 @@ on dune-elastodynamics, dune-foamgrid (version >= 2.7) providing the necessary t
 The dune-elastodynamics module can be found here:
 https://github.com/maxfirmbach/dune-elastodynamics
 
-The executable for the perpendicular-flap tutorial case can be
+The executable `dune-perpendicular-flap` for the perpendicular-flap tutorial case can be
 found in:
-`dune-precice/build-cmake/src/`
-after the module was build and needs to be copied to the solid-dune folder inside the respective
-tutorial case.
+`dune-precice-howto/build-cmake/examples/`
+after the module was built and needs to be copied to the `solid-dune` folder inside the respective tutorial case.
 
 <a id="1">[1]</a> 
 Firmbach M. (2021).
