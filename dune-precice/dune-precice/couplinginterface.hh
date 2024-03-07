@@ -1,5 +1,3 @@
-// -*- tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
-// vi: set et ts=4 sw=2 sts=2:
 
 #ifndef DUNE_PRECICE_HH
 #define DUNE_PRECICE_HH
@@ -9,8 +7,8 @@
 #include <string>
 #include <vector>
 
-#include <dune/istl/io.hh>
 #include <dune/istl/bvector.hh>
+#include <dune/istl/io.hh>
 
 #include <dune/functions/functionspacebases/interpolate.hh>
 
@@ -65,12 +63,9 @@ namespace Dune::preCICE {
       
       const BlockVector<FieldVector<bool, dim>> is_coupling_boundary_;
 
-      std::string mesh_name_;
-      std::string read_data_name_;
-      std::string write_data_name_;
-      precice::string_view mesh_name_view;
-      precice::string_view read_data_name_view;
-      precice::string_view write_data_name_view; 
+      const std::string mesh_name_;
+      const std::string read_data_name_;
+      const std::string write_data_name_;
 
       int n_interface_nodes_;
       std::vector<precice::VertexID> interface_nodes_ids_;
@@ -118,14 +113,12 @@ namespace Dune::preCICE {
       bool is_coupling_ongoing() const;
       bool is_time_window_complete() const;
       void finalize();
-        
   };
-  
   
   template <int dim, typename VectorType, typename ParameterClass>
   CouplingInterface<dim, VectorType, ParameterClass>::CouplingInterface(
     const ParameterClass &parameters,
-    const BlockVector<FieldVector<bool,dim>> &is_coupling_boundary,
+    const BlockVector<FieldVector<bool, dim>> &is_coupling_boundary,
     const int mpi_rank, const int mpi_size)
     : precice(parameters.participant_name, parameters.config_file, mpi_rank, mpi_size)
     , is_coupling_boundary_(is_coupling_boundary)
@@ -134,9 +127,6 @@ namespace Dune::preCICE {
     , read_data_name_(parameters.read_data_name)
     , write_data_name_(parameters.write_data_name)
   {
-    mesh_name_view = precice::string_view(mesh_name_);
-    read_data_name_view = precice::string_view(read_data_name_);
-    write_data_name_view = precice::string_view(write_data_name_);
   }
     
   template <int dim, typename VectorType, typename ParameterClass>
@@ -153,8 +143,10 @@ namespace Dune::preCICE {
     const precice::span<double> interface_nodes_positions_span = precice::span(interface_nodes_positions);
     for(int i=0; i<coordinates_of_boundary.N(); i++) {
       for(int j=0; j<dim; j++) {
-        if(is_coupling_boundary_[i][j]) {interface_nodes_positions.push_back(coordinates_of_boundary[i][j]);
-        interface_nodes_ids_.push_back(j*coordinates_of_boundary.N()+i);}
+        if(is_coupling_boundary_[i][j]) {
+          interface_nodes_positions.push_back(coordinates_of_boundary[i][j]);
+          interface_nodes_ids_.push_back(j*coordinates_of_boundary.N()+i);
+          }
       }
     }
         
@@ -163,12 +155,11 @@ namespace Dune::preCICE {
       indicator = true;
       n_interface_nodes_ = std::count(is_coupling_boundary_.begin(), is_coupling_boundary_.end(), indicator);
     }
+
     write_data_.resize(dim * n_interface_nodes_);
     read_data_.resize(dim * n_interface_nodes_);
     interface_nodes_positions.resize(dim * n_interface_nodes_);
     interface_nodes_ids_.resize(n_interface_nodes_);
-
-    
 
     std::cout << "preCICE:  Mesh on rank "     << mpi_rank_ << " = " << mesh_name_           << std::endl;
     std::cout << "preCICE:  Read on rank "     << mpi_rank_ << " = " << read_data_name_      << std::endl;
@@ -193,7 +184,7 @@ namespace Dune::preCICE {
   template <int dim, typename VectorType, typename ParameterClass>
   void CouplingInterface<dim, VectorType, ParameterClass>::read_blockvector_data(VectorType &dune_data, double dt)
   { 
-    precice.readData(mesh_name_view,read_data_name_view,interface_nodes_ids_,dt, read_data_span);
+    precice.readData(mesh_name_, read_data_name_, interface_nodes_ids_, dt, read_data_span);
     Utilities::copy_from_precice_to_dune<dim, VectorType>(dune_data, read_data_, is_coupling_boundary_);
   }
 
@@ -201,7 +192,7 @@ namespace Dune::preCICE {
   void CouplingInterface<dim, VectorType, ParameterClass>::write_blockvector_data(const VectorType &dune_data)
   {
     Utilities::copy_from_dune_to_precice<dim, VectorType>(dune_data, write_data_, is_coupling_boundary_);
-    precice.writeData(mesh_name_view, write_data_name_view, interface_nodes_ids_span, write_data_span);
+    precice.writeData(mesh_name_, write_data_name_, interface_nodes_ids_span, write_data_span);
   }
       
   template <int dim, typename VectorType, typename ParameterClass>
