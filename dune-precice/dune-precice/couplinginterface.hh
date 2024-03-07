@@ -94,8 +94,8 @@ namespace Dune::preCICE {
 
       double get_max_time_step_size() const;
        
-      void read_blockvector_data(VectorType &dune_data, double dt);
-      void write_blockvector_data(const VectorType &dune_data);
+      void read_data(VectorType &dune_data, double dt);
+      void write_data(const VectorType &dune_data);
 
       void advance(double computed_timestep_length);
 
@@ -107,8 +107,8 @@ namespace Dune::preCICE {
                             double &current_time_value,
                             int &current_iter_value);
                                          
-      bool is_save_required() ;
-      bool is_load_required() ;
+      bool is_save_required();
+      bool is_load_required();
   
       bool is_coupling_ongoing() const;
       bool is_time_window_complete() const;
@@ -182,14 +182,14 @@ namespace Dune::preCICE {
     return precice.getMaxTimeStepSize();
   }
   template <int dim, typename VectorType, typename ParameterClass>
-  void CouplingInterface<dim, VectorType, ParameterClass>::read_blockvector_data(VectorType &dune_data, double dt)
+  void CouplingInterface<dim, VectorType, ParameterClass>::read_data(VectorType &dune_data, double dt)
   { 
     precice.readData(mesh_name_, read_data_name_, interface_nodes_ids_, dt, read_data_span);
     Utilities::copy_from_precice_to_dune<dim, VectorType>(dune_data, read_data_, is_coupling_boundary_);
   }
 
   template <int dim, typename VectorType, typename ParameterClass>
-  void CouplingInterface<dim, VectorType, ParameterClass>::write_blockvector_data(const VectorType &dune_data)
+  void CouplingInterface<dim, VectorType, ParameterClass>::write_data(const VectorType &dune_data)
   {
     Utilities::copy_from_dune_to_precice<dim, VectorType>(dune_data, write_data_, is_coupling_boundary_);
     precice.writeData(mesh_name_, write_data_name_, interface_nodes_ids_span, write_data_span);

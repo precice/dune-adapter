@@ -180,7 +180,7 @@ int main(int argc, char** argv) {
     }
     
     // get neumann values from fluid solver
-    couplingInterface.read_blockvector_data(loadVector, dt);
+    couplingInterface.read_data(loadVector, dt);
  
     // setup fixed dirichlet values
     for( int i=0; i<loadVector.N(); i++) {
@@ -193,7 +193,7 @@ int main(int argc, char** argv) {
             
     dt = std::min(precice_dt, dt);
                           
-    couplingInterface.write_blockvector_data(displacementVector);
+    couplingInterface.write_data(displacementVector);
     couplingInterface.advance(dt);
     precice_dt = couplingInterface.get_max_time_step_size();
                      
