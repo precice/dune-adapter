@@ -1,5 +1,3 @@
-// -*- tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
-// vi: set et ts=4 sw=2 sts=2:
 
 #include <config.h>
 
@@ -37,7 +35,6 @@
 #include <dune-precice/couplinginterface.hh>
 
 using namespace Dune;
-
 struct couplingParameters {
 
   const std::string config_file      = "../precice-config.xml";
@@ -144,6 +141,7 @@ int main(int argc, char** argv) {
   neumannDofs = false;
   auto neumannPredicate = [](auto position) {return position[1] > -3.000001 || position[0] < 2.955555 || position[0] > 3.055555;};  
   
+  // apply the lambda function to basis and store the result in neumannDofs
   Functions::interpolate(basis, neumannDofs, neumannPredicate);
   
   // generate global displacement function
@@ -172,17 +170,17 @@ int main(int argc, char** argv) {
   // set up coupling interface
   couplingParameters parameters; 
   preCICE::CouplingInterface<dim, blockVector, couplingParameters> couplingInterface(parameters, neumannDofs, mpiRank, mpiSize); 
-  precice_dt = couplingInterface.initialize(basis);
-  
+  couplingInterface.initialize(basis);
+  precice_dt = couplingInterface.get_max_time_step_size();
+  dt = std::min(dt, precice_dt);
   while(couplingInterface.is_coupling_ongoing()) {
   
     if(couplingInterface.is_save_required()) {
         couplingInterface.save_current_state(stateQuantaties, t, iteration_count);
-        couplingInterface.mark_save_fullfilled();
     }
     
     // get neumann values from fluid solver
-    couplingInterface.read_blockvector_data(loadVector);
+    couplingInterface.read_data(loadVector, dt);
  
     // setup fixed dirichlet values
     for( int i=0; i<loadVector.N(); i++) {
@@ -195,12 +193,12 @@ int main(int argc, char** argv) {
             
     dt = std::min(precice_dt, dt);
                           
-    couplingInterface.write_blockvector_data(displacementVector);
-    precice_dt = couplingInterface.advance(dt);
+    couplingInterface.write_data(displacementVector);
+    couplingInterface.advance(dt);
+    precice_dt = couplingInterface.get_max_time_step_size();
                      
     if(couplingInterface.is_load_required()) {
         couplingInterface.reload_old_state(stateQuantaties, t, iteration_count);
-        couplingInterface.mark_load_fullfilled();
     }
     else {
       t += dt;
