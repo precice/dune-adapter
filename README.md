@@ -17,7 +17,7 @@ For more detailed information about how `dunecontrol` is used for installing DUN
 
 This module contains a DUNE based solver for the solid participant of the [perpendicular-flap](https://github.com/precice/tutorials/tree/master/perpendicular-flap) tutorial case. The [dune-elastodynamics](https://github.com/maxfirmbach/dune-elastodynamics) module is an external requirement which needs to be separately downloaded.
 
-After the module is built, the executable `dune-perpendicular-flap` case can be found in `dune-precice-howto/build-cmake/examples/`. Copy the executable to the [solid-dune](https://github.com/precice/tutorials/tree/master/perpendicular-flap/solid-dune) folder and then run the case.
+This module is built in the same way as the adapter. The executable `dune-perpendicular-flap` is in `dune-precice-howto/build-cmake/examples/`. Copy the executable to the [solid-dune](https://github.com/precice/tutorials/tree/master/perpendicular-flap/solid-dune) folder and then run the case.
 
 ## Citing
 
