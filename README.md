@@ -1,32 +1,25 @@
-# dune-adapter
-**experimental** preCICE-adapter for DUNE, a modular toolbox for solving partial differential equations
+# DUNE-preCICE adapter
 
-## dune-precice
-A adapter module enabeling multiphysics simulation inside DUNE with the help of preCICE [1][2].
+**experimental** preCICE-adapter for DUNE, a modular toolbox for solving partial differential equations.
 
-Build the adapter by running:
-`<path-to-dune-common/bin/dunecontrol> --current all`
+## Installing the adapter
 
-For more detailed installation instructions have a look at:
-https://www.dune-project.org/doc/installation/
+Build the adapter in the following way:
+
+```bash
+cd dune-precice
+<path-to-dune-common/bin/dunecontrol> --current all
+```
+
+For more detailed information about how `dunecontrol` is used for installing DUNE modules, look at the *Building DUNE Modules* in the [DUNE documentation](https://www.dune-project.org/doc/installation/installation-buildsrc/).
 
 ## dune-precice-howto
-This module contains tutorial cases to get familiar with preCICE and the respective dune-adapter.
 
-The dune-adapter module depends on the DUNE core modules (version >= 2.7), dune-precice (precice version >= 2.0.0) and
-on dune-elastodynamics, dune-foamgrid (version >= 2.7) providing the necessary tools for structural simulation.
+This module contains a DUNE based solver for the solid participant of the [perpendicular-flap](https://github.com/precice/tutorials/tree/master/perpendicular-flap) tutorial case. The [dune-elastodynamics](https://github.com/maxfirmbach/dune-elastodynamics) module is an external requirement which needs to be separately downloaded.
 
-The dune-elastodynamics module can be found here:
-https://github.com/maxfirmbach/dune-elastodynamics
+After the module is built, the executable `dune-perpendicular-flap` case can be found in `dune-precice-howto/build-cmake/examples/`. Copy the executable to the [solid-dune](https://github.com/precice/tutorials/tree/master/perpendicular-flap/solid-dune) folder and then run the case.
 
-After the module is built, the executable `dune-perpendicular-flap` for the perpendicular-flap tutorial case can be found in:
-`dune-precice-howto/build-cmake/examples/`
-and needs to be copied to the `solid-dune` folder inside the respective tutorial case.
+## Citing
 
-<a id="1">[1]</a> 
-Firmbach M. (2021).
-[Aeroelastic simulation of slender wings for electric aircraft - A partitioned approach with DUNE and preCICE](https://mediatum.ub.tum.de/node?id=1609293), Master's Thesis
-
-<a id="2">[2]</a> 
-Firmbach M., Callies R. (2021).
-[Aeroelastic simulation of slender wings for electric aircraft - A partitioned approach with DUNE and preCICE](https://athene-forschung.unibw.de/138607), Conference Contribution
+- Firmbach M. (2021). Aeroelastic simulation of slender wings for electric aircraft - A partitioned approach with DUNE and preCICE, [Master Thesis](https://mediatum.ub.tum.de/node?id=1609293)
+- Firmbach M., Callies R. (2021). Aeroelastic simulation of slender wings for electric aircraft - A partitioned approach with DUNE and preCICE, [Conference Contribution](https://athene-forschung.unibw.de/138607)
