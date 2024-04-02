@@ -9,7 +9,7 @@ summary: "A DUNE module-type adapter to couple to other codes using preCICE"
 
 **experimental** preCICE-adapter for [DUNE](https://www.dune-project.org/), a modular toolbox for solving partial differential equations.
 
-The DUNE-preCICE adapter is a DUNE module. An example solver that uses the adapter is available in `dune-precice-howto/`. This is another DUNE module, based on the [dune-elastodynamics](https://github.com/maxfirmbach/dune-elastodynamics) module. To build all modules together, the easiest is to clone all repositories in the same directory, and build all modules present in that directory. See how we install DUNE in the [preCICE Demo VM](https://github.com/precice/vm/blob/develop/provisioning/install-dune.sh).
+The DUNE-preCICE adapter is a DUNE module. An example solver that uses the adapter is available in `dune-precice-howto/`. This is another DUNE module, based on the [dune-elastodynamics](https://github.com/maxfirmbach/dune-elastodynamics) module. To build all modules together, the easiest way is to clone all repositories in the same directory, and build all modules present in that directory. See how we install DUNE in the [preCICE Demo VM](https://github.com/precice/vm/blob/develop/provisioning/install-dune.sh).
 
 ## Installing the adapter
 
