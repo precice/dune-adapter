@@ -1,6 +1,7 @@
 ---
 title: The DUNE adapter
 permalink: adapter-dune.html
+url: /adapter-dune.html
 keywords: DUNE, FSI, C++
 summary: "A DUNE module-type adapter to couple to other codes using preCICE"
 ---
